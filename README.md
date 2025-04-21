@@ -28,13 +28,40 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 - **View**  
   - UI의 기본 컨테이너이자 레이아웃의 빌딩 블록
+ 
+---
+
 - **Text**  
   - 텍스트를 표시하며, 스타일링이나 터치 이벤트까지 처리
   - View에다가 바로 이 컴포넌트를 사용하면 ios같은 경우에는 위아래 노치영역부터 텍스트가 생기기 때문에 고려해서 해야한다.
   - 그렇기 때문에 **SafeAreaView** 라는 태그를 사용함
+``` bash
+<Text style={styles.titleText} onPress={onPressTitle}>
+   {titleText}
+   {'\n'}
+   {'\n'}
+</Text>
+```
+ 
+---
 
 - **Image**  
   - 다양한 포맷의 이미지를 표현
+``` bash
+<Image
+  style={styles.tinyLogo}
+  source={require('@expo/snack-static/react-native-logo.png')}
+/>
+<Image
+  style={styles.tinyLogo}
+  source={{
+    uri: 'https://reactnative.dev/img/tiny_logo.png',
+  }}
+/>
+```
+ 
+---
+
 - **TextInput**  
   - 사용자로부터 텍스트 입력을 받기 위한 컴포넌트
 ``` bash
@@ -46,8 +73,31 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
  keyboardType="numeric"
 />
 ```
+ 
+---
+
 - **ScrollView**  
   - 여러 하위 컴포넌트를 감싸면서 스크롤이 가능한 컨테이너
+``` bash
+   <SafeAreaProvider>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView style={styles.scrollView}>
+        <Text style={styles.text}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </Text>
+      </ScrollView>
+    </SafeAreaView>
+  </SafeAreaProvider>
+```
+
+---
+
 - **StyleSheet**  
   - CSS와 유사한 방식으로 스타일을 정의할 수 있는 도구
 ``` bash
@@ -62,21 +112,122 @@ const style = StyleSheet.create({
    }
 })
 ```
+ 
+---
 
 ### B. 사용자 인터페이스 (User Interface)
 
 - **Button**  
   터치 이벤트를 감지하는 기본 버튼 컴포넌트
+``` bash
+<Button
+   onPress={onPressLearnMore}
+   title="Learn More"
+   color="#841584"
+   accessibilityLabel="Learn more about this purple button"
+/>
+```
 - **Switch**  
   Boolean 타입의 값을 토글할 수 있는 스위치
+``` bash
+<SafeAreaProvider>
+   <SafeAreaView style={styles.container}>
+     <Switch
+       trackColor={{false: '#767577', true: '#81b0ff'}}
+       thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+       ios_backgroundColor="#3e3e3e"
+       onValueChange={toggleSwitch}
+       value={isEnabled}
+     />
+   </SafeAreaView>
+ </SafeAreaProvider>
+```
+
+---
 
 ### C. 리스트 뷰 (List Views)
 
 - **FlatList**  
   최적화된 스크롤 가능한 리스트로, 큰 데이터 집합에 적합
+``` bash
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+];
+
+type ItemProps = {title: string};
+
+const Item = ({title}: ItemProps) => (
+  <View style={styles.item}>
+    <Text style={styles.title}>{title}</Text>
+  </View>
+);
+
+const App = () => (
+  <SafeAreaProvider>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={DATA}
+        renderItem={({item}) => <Item title={item.title} />}
+        keyExtractor={item => item.id}
+      />
+    </SafeAreaView>
+  </SafeAreaProvider>
+);
+
+```
 - **SectionList**  
   구간별(section) 리스트 렌더링에 특화된 컴포넌트
+``` bash
+const DATA = [
+  {
+    title: 'Main dishes',
+    data: ['Pizza', 'Burger', 'Risotto'],
+  },
+  {
+    title: 'Sides',
+    data: ['French Fries', 'Onion Rings', 'Fried Shrimps'],
+  },
+  {
+    title: 'Drinks',
+    data: ['Water', 'Coke', 'Beer'],
+  },
+  {
+    title: 'Desserts',
+    data: ['Cheese Cake', 'Ice Cream'],
+  },
+];
 
+const App = () => (
+  <SafeAreaProvider>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <SectionList
+        sections={DATA}
+        keyExtractor={(item, index) => item + index}
+        renderItem={({item}) => (
+          <View style={styles.item}>
+            <Text style={styles.title}>{item}</Text>
+          </View>
+        )}
+        renderSectionHeader={({section: {title}}) => (
+          <Text style={styles.header}>{title}</Text>
+        )}
+      />
+    </SafeAreaView>
+  </SafeAreaProvider>
+);
+
+```
 ## 2. 플랫폼별 컴포넌트 및 API
 
 필요에 따라 해당 플랫폼 전용 기능을 제공하는 컴포넌트를 사용할 수 있습니다.
