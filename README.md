@@ -27,17 +27,41 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 ### A. 기본 컴포넌트 (Basic Components)
 
 - **View**  
-  UI의 기본 컨테이너이자 레이아웃의 빌딩 블록
+  - UI의 기본 컨테이너이자 레이아웃의 빌딩 블록
 - **Text**  
-  텍스트를 표시하며, 스타일링이나 터치 이벤트까지 처리
+  - 텍스트를 표시하며, 스타일링이나 터치 이벤트까지 처리
+  - View에다가 바로 이 컴포넌트를 사용하면 ios같은 경우에는 위아래 노치영역부터 텍스트가 생기기 때문에 고려해서 해야한다.
+  - 그렇기 때문에 **SafeAreaView** 라는 태그를 사용함
+
 - **Image**  
-  다양한 포맷의 이미지를 표현
+  - 다양한 포맷의 이미지를 표현
 - **TextInput**  
-  사용자로부터 텍스트 입력을 받기 위한 컴포넌트
+  - 사용자로부터 텍스트 입력을 받기 위한 컴포넌트
+``` bash
+<TextInput
+ style={styles.input}
+ onChangeText={onChangeNumber}
+ value={number}
+ placeholder="useless placeholder"
+ keyboardType="numeric"
+/>
+```
 - **ScrollView**  
-  여러 하위 컴포넌트를 감싸면서 스크롤이 가능한 컨테이너
+  - 여러 하위 컴포넌트를 감싸면서 스크롤이 가능한 컨테이너
 - **StyleSheet**  
-  CSS와 유사한 방식으로 스타일을 정의할 수 있는 도구
+  - CSS와 유사한 방식으로 스타일을 정의할 수 있는 도구
+``` bash
+<SafeAreaView>
+   <View style={styles.container}>
+   </View>
+</SafeAreaView>
+
+const style = StyleSheet.create({
+   container : {
+      backgroundColor: "yellow"
+   }
+})
+```
 
 ### B. 사용자 인터페이스 (User Interface)
 
