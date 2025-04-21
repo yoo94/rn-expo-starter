@@ -117,6 +117,44 @@ const style = StyleSheet.create({
 
 ### B. 사용자 인터페이스 (User Interface)
 
+- **Pressable**  
+  터치 이벤트를 감지하는 기본 컴포넌트
+``` bash
+<Pressable
+ onPress={() => {
+   setTimesPressed(current => current + 1);
+ }}
+ style={({pressed}) => [
+   {
+     backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+   },
+   styles.wrapperCustom,
+ ]}>
+ {({pressed}) => (
+   <Text style={styles.text}>{pressed ? 'Pressed!' : 'Press Me'}</Text>
+ )}
+</Pressable>
+```
+---
+- **TouchableOpacity**  
+  뷰가 터치에 제대로 반응하도록 하는 래퍼입니다. 눌렀을 때 래핑된 뷰의 불투명도가 감소하여 어두워짐
+``` bash
+<TouchableOpacity style={styles.button} onPress={onPress}>
+ <Text>Press Here</Text>
+</TouchableOpacity>
+```
+---
+- **TouchableWithoutFeedback**  
+  뷰가 터치에 제대로 반응하도록 하는 래퍼입니다. 눌렀을 아무 피드백없이 onPress만 실행한다.
+``` bash
+<TouchableWithoutFeedback onPress={onPress}>
+ <View style={styles.button}>
+   <Text>Touch Here</Text>
+ </View>
+</TouchableWithoutFeedback>
+```
+---
+
 - **Button**  
   터치 이벤트를 감지하는 기본 버튼 컴포넌트
 ``` bash
