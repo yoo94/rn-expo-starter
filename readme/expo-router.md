@@ -1,81 +1,39 @@
-# expo router
+# Expo Router 핵심 개념 요약
 
-expo는 기본적으로 파일 기반 라우팅이다.
+Expo Router는 파일 기반 라우팅 방식을 사용하여 네비게이션 구성을 단순하고 직관적으로 만들어 줍니다. 아래는 주요 개념들입니다.
 
-폴더와 파일명이 경로가 된다.
+## 1. 모든 스크린/페이지는 `app` 디렉토리 내부의 파일로 정의됨
 
-- index.tsx 같은 경우에는 / 가 된다.
-- explore.tsx 는 /explore 가 된다.
-- ()안에 있으면 경로에 포함이 안된다.
-- (tabs)안에 mypage디렉토리 안에 index.tsx를 만들면 /mypage가 된다.
-- 각폴더에는 \_layout.tsx가 있다.
+- 앱 내의 모든 네비게이션 경로는 `app` 폴더 내부에 위치한 파일과 하위 디렉토리로 결정됩니다.
+- 각 파일은 **default export**를 통해 하나의 페이지로 작동합니다.
+- 단, 특별한 용도의 `_layout.tsx` 파일은 라우트를 직접 표현하지 않고 레이아웃을 정의합니다.
+
+## 2. 모든 페이지는 URL을 가짐
+
+- 파일 시스템의 구조에 따라 자동으로 URL 경로가 할당됩니다.
+- 이 URL은 웹 브라우저 주소창은 물론, 네이티브 앱의 딥링크로도 활용할 수 있습니다.
+- 덕분에 모든 플랫폼에서 **유니버설 딥링킹**을 지원합니다.
+
+## 3. 첫 번째 `index.tsx` 파일이 초기 라우트 역할을 함
+
+- 초기 화면(루트 경로 `/`)은 별도로 코드로 지정하지 않고, 가장 먼저 매칭되는 `index.tsx` 파일이 기본 라우트가 됩니다.
+- 예를 들어, `app/index.tsx`가 기본 시작 페이지가 될 수 있으며, 라우트 그룹(괄호로 감싼 디렉토리)을 활용해 기본 경로 내에서 다른 계층 구조로 시작할 수도 있습니다.
+
+## 4. 루트 `_layout.tsx`가 기존의 `App.jsx/tsx`를 대체함
+
+- 모든 프로젝트는 `app` 디렉토리 내에 `_layout.tsx` 파일을 반드시 포함해야 합니다.
+- 이 파일은 앱이 시작될 때 가장 먼저 렌더링되며, 폰트 로딩, 스플래시 스크린 관리와 같은 초기화 작업을 수행합니다.
+
+## 5. 네비게이션 관련이 아닌 컴포넌트는 `app` 디렉토리 외부에 위치해야 함
+
+- 라우트 외의 컴포넌트, 훅, 유틸리티 등은 `app` 폴더 외부(예: `components`, `hooks`, `utils` 등)나 `src` 폴더 내에 따로 관리해야 합니다.
+- `app` 폴더는 오직 라우트 정의에만 사용되므로, 다른 코드가 포함되면 Expo Router가 이를 라우트로 오인할 수 있습니다.
+
+## 6. 내부적으로 React Navigation 사용
+
+- Expo Router는 파일 기반 네비게이션 인터페이스를 제공하지만, 실제 내부 동작은 **React Navigation**을 기반으로 합니다.
+- 이를 통해 스택, 탭, 모달 등 복잡한 네비게이션 패턴도 쉽게 구현할 수 있습니다.
 
 ---
 
-```tsx
-<Pressable
-  onPress={() => {
-    router.push("/explore");
-  }}
->
-  <Text>gogo explore</Text>
-</Pressable>
-```
-
-### \_layout.tsx
-
-##### tabs 역할을 하는경우 <Tabs> 를 사용하여 Screen을 옮기고, 아닌경우에는 <Stack을> 사용한다.
-
-```tsx
-import { Tabs } from "expo-router";
-import React from "react";
-import { Platform } from "react-native";
-
-export default function TabLayout() {
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "black",
-        headerShown: false,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-        }}
-      />
-    </Tabs>
-  );
-}
-```
-
-```tsx
-import { Stack } from "expo-router";
-import React from "react";
-
-export default function MyLayout() {
-  return (
-    <Stack
-      screenOptions={{
-        contentStyle: backgroundColor: "black",
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Home",
-          headerShown: false,
-        }}
-      />
-    </Stack>
-  );
-}
-```
+이와 같은 파일 기반 라우팅 시스템은 코드 구조를 명확하게 하고, URL과 파일 시스템 간의 자연스러운 매핑을 통해 개발 과정을 단순화시켜 줍니다. 추가적으로, Expo Router는 동적 라우트, 그룹 라우트, 특별 접두어(예, `+not-found`, `+native-intent` 등) 등을 지원하여 복잡한 네비게이션 요구사항에도 유연하게 대응할 수 있습니다.
